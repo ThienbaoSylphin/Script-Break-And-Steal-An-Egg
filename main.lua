@@ -101,7 +101,7 @@ SylPhinCore.Config = {
     UpdateLog = {
         { "2026-11-03", "Rebranded to SylPhin Hub & Fully Refactored Performance" },
     },
-    UiSource = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/refs/heads/main/UI",
+    UiSource = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/refs/heads/main/UI?t=" .. tostring(os.time()),
     SaveFolder = "SylPhinHub",
     LoadTimeout = 30,
     RequireTimeout = 3,
