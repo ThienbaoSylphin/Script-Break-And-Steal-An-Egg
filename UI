@@ -1,0 +1,104 @@
+-- SylPhin UI Engine · Standalone Modern Build 2026
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
+local CoreGui = game:GetService("CoreGui")
+local Stats = game:GetService("Stats")
+local Workspace = game:GetService("Workspace")
+
+local LocalPlayer = Players.LocalPlayer
+
+local Library = {
+    Version = "2.0 Pro",
+    Options = {},
+    Toggles = {},
+    Unloaded = false,
+    Window = nil,
+}
+
+local Config = {
+    GuiAttribute = "SylPhinUI",
+    Root = "sylphin",
+    AssetDir = "sylphin/assets",
+    ConfigRoot = "sylphin/configs",
+    DefaultAssets = {
+        logo = "https://raw.githubusercontent.com/xDTaraZz/Roblox-Scripts/main/logo.png",
+    },
+    SeasonTheme = "SylPhin Dark",
+    FontDir = "sylphin/fonts",
+    Text = { Title = 24, Header = 20, Group = 15, Label = 14, Desc = 12, Small = 11, Button = 14, Watermark = 12, Section = 12 },
+    Window = {
+        Width = 840, Height = 560, MinWidth = 540, MinHeight = 380,
+        Topbar = 52, Sidebar = 200, SidebarCompact = 64, Header = 58, Ground = 18,
+        Radius = 10, Stroke = 1.5, Shadow = 8,
+    },
+    Metrics = {
+        Desktop = { Row = 34, Box = 32, Item = 30, Track = 8, Knob = 16, Switch = Vector2.new(44, 22), SwitchKnob = 16, Tab = 40, Icon = 18, Radius = 8 },
+        Touch = { Row = 40, Box = 36, Item = 36, Track = 10, Knob = 20, Switch = Vector2.new(50, 26), SwitchKnob = 20, Tab = 46, Icon = 20, Radius = 8 },
+    },
+    Motion = { Speed = { Fast = 28, Normal = 20, Soft = 14, Slow = 10 }, Damping = 0.75 },
+    Layer = { Window = 10, Watermark = 30, Float = 40, Overlay = 50, Modal = 52, Tooltip = 55, Notify = 60, Intro = 70 },
+}
+
+local function rgb(hex)
+    return Color3.fromRGB(tonumber(hex:sub(1, 2), 16), tonumber(hex:sub(3, 4), 16), tonumber(hex:sub(5, 6), 16))
+end
+
+local Themes = {
+    Order = { "SylPhin Dark", "Midnight Cyber", "Vapor Neon", "Clean Light" },
+    ["SylPhin Dark"] = {
+        Backdrop = rgb("0F172A"), BackdropAlt = rgb("1E293B"), Topbar = rgb("0F172A"), Sidebar = rgb("1E293B"),
+        SidebarText = rgb("F8FAFC"), SidebarMuted = rgb("94A3B8"), TabActive = rgb("6366F1"), TabActiveText = rgb("FFFFFF"),
+        Panel = rgb("1E293B"), PanelHeader = rgb("334155"), Element = rgb("0F172A"), Hover = rgb("334155"),
+        Outline = rgb("334155"), Shadow = rgb("020617"), Text = rgb("F8FAFC"), SubText = rgb("94A3B8"), Muted = rgb("64748B"),
+        Track = rgb("334155"), Accent = rgb("6366F1"), AccentDark = rgb("4F46E5"), Glow = rgb("06B6D4"),
+        Good = rgb("10B981"), GoodDark = rgb("059669"), Danger = rgb("EF4444"), DangerDark = rgb("DC2626"),
+        White = rgb("FFFFFF"), Black = rgb("000000"), Ink = rgb("0F172A"),
+    },
+    ["Midnight Cyber"] = {
+        Backdrop = rgb("0B0F19"), BackdropAlt = rgb("111827"), Topbar = rgb("0B0F19"), Sidebar = rgb("111827"),
+        SidebarText = rgb("F3F4F6"), SidebarMuted = rgb("6B7280"), TabActive = rgb("06B6D4"), TabActiveText = rgb("0B0F19"),
+        Panel = rgb("1F2937"), PanelHeader = rgb("374151"), Element = rgb("111827"), Hover = rgb("374151"),
+        Outline = rgb("374151"), Shadow = rgb("030712"), Text = rgb("F9FAFB"), SubText = rgb("9CA3AF"), Muted = rgb("4B5563"),
+        Track = rgb("374151"), Accent = rgb("06B6D4"), AccentDark = rgb("0891B2"), Glow = rgb("A855F7"),
+        Good = rgb("10B981"), GoodDark = rgb("059669"), Danger = rgb("F43F5E"), DangerDark = rgb("E11D48"),
+        White = rgb("FFFFFF"), Black = rgb("000000"), Ink = rgb("0B0F19"),
+    }
+}
+
+-- Biểu tượng Logo Chữ S độc quyền SylPhin (Thay thế Logo M cũ)
+local Draw = {}
+function Draw.SylPhinEmblem(parent, size)
+    local emblem = Instance.new("Frame")
+    emblem.Name = "SylPhinEmblem"
+    emblem.Size = UDim2.fromOffset(size, size)
+    emblem.BackgroundColor3 = Themes["SylPhin Dark"].Accent
+    emblem.BorderSizePixel = 0
+    emblem.Parent = parent
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 8)
+    corner.Parent = emblem
+
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = Themes["SylPhin Dark"].Glow
+    stroke.Thickness = 1.5
+    stroke.Parent = emblem
+
+    local letter = Instance.new("TextLabel")
+    letter.Text = "S"
+    letter.Font = Enum.Font.LuckiestGuy
+    letter.TextSize = math.floor(size * 0.6)
+    letter.TextColor3 = rgb("FFFFFF")
+    letter.Size = UDim2.fromScale(1, 1)
+    letter.BackgroundTransparency = 1
+    letter.Parent = emblem
+
+    return emblem
+end
+
+-- Export UI Library Wrapper
+Library.Themes = Themes.Order
+return Library
