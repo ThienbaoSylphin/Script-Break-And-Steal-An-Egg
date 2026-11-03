@@ -1490,7 +1490,7 @@ function StarHubUI:CreateWindow(cfg)
     ContentArea.Position = UDim2.new(0, 175, 0, 0)
     ContentArea.BackgroundTransparency = 1
 
-    local FloatingSquircle = Instance.new("Frame", ScreenGui)
+        local FloatingSquircle = Instance.new("Frame", ScreenGui)
     FloatingSquircle.Name = "StarHubUI_FloatingSquircle"
     FloatingSquircle.Size = UDim2.new(0, 52, 0, 52)
     FloatingSquircle.Position = UDim2.new(0, 20, 0.45, 0)
@@ -1555,6 +1555,7 @@ function StarHubUI:CreateWindow(cfg)
     Instance.new("UICorner", flLogoGlow).CornerRadius = UDim.new(1, 0)
     RegisterElement("Accents", flLogoGlow)
 
+    -- ĐÃ THAY ĐỔI HÌNH NỀN BÓNG ĐỔ SANG LOGO SYL CỦA BẠN TẠI ĐÂY
     local flIconShadow = Instance.new("ImageLabel", FloatingSquircle)
     flIconShadow.Name = "IconShadow"
     flIconShadow.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -1562,11 +1563,12 @@ function StarHubUI:CreateWindow(cfg)
     flIconShadow.Position = UDim2.new(0.5, 1, 0.5, 2)
     flIconShadow.BackgroundTransparency = 1
     flIconShadow.ScaleType = Enum.ScaleType.Fit
-    flIconShadow.Image = ResolvedLogo
+    flIconShadow.Image = "rbxassetid://83869254770810"
     flIconShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
     flIconShadow.ImageTransparency = 0.6
     flIconShadow.ZIndex = 5
 
+    -- ĐÃ THAY ĐỔI LOGO CHÍNH NÚT TRÒN SANG LOGO SYL CỦA BẠN TẠI ĐÂY
     local flIcon = Instance.new("ImageLabel", FloatingSquircle)
     flIcon.Name = "MainLogo"
     flIcon.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -1574,7 +1576,7 @@ function StarHubUI:CreateWindow(cfg)
     flIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
     flIcon.BackgroundTransparency = 1
     flIcon.ScaleType = Enum.ScaleType.Fit
-    flIcon.Image = ResolvedLogo
+    flIcon.Image = "rbxassetid://83869254770810"
     flIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
     flIcon.Rotation = 0
     flIcon.ZIndex = 10
