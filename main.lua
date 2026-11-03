@@ -467,7 +467,8 @@ function SylPhinCore.Util.HttpGet(url)
 end
 
 function SylPhinCore.Util.LoadLibrary()
-    local body = SylPhinCore.Util.HttpGet(Config.UiSource)
+    local url = Config.UiSource .. (Config.UiSource:find("%?") and "&t=" or "?t=") .. tostring(os.time())
+    local body = SylPhinCore.Util.HttpGet(url)
     if not body then return nil end
     local chunk = loadstring(body)
     if not chunk then return nil end
