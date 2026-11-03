@@ -1563,7 +1563,6 @@ function StarHubUI:CreateWindow(cfg)
     flIconShadow.Position = UDim2.new(0.5, 1, 0.5, 2)
     flIconShadow.BackgroundTransparency = 1
     flIconShadow.ScaleType = Enum.ScaleType.Fit
-    flIconShadow.Image = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png"
     flIconShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
     flIconShadow.ImageTransparency = 0.6
     flIconShadow.ZIndex = 5
@@ -1576,7 +1575,34 @@ function StarHubUI:CreateWindow(cfg)
     flIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
     flIcon.BackgroundTransparency = 1
     flIcon.ScaleType = Enum.ScaleType.Fit
-    flIcon.Image = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png"
+        -- ÉP NÚT TRÒN ĐỌC THẲNG LINK IMGUR KHÔNG QUA HÀM LỌC CỦA THƯ VIỆN
+    local function SetDirectImage(obj, url)
+        pcall(function()
+            local safeName = "starhub_floating_btn_logo.png"
+            if writefile and isfile and game:HttpGet then
+                if not isfile(safeName) then
+                    local res = game:HttpGet(url)
+                    if res and #res > 100 then writefile(safeName, res) end
+                end
+                if isfile(safeName) then
+                    if getcustomasset then obj.Image = getcustomasset(safeName)
+                    elseif getsynasset then obj.Image = getsynasset(safeName)
+                    else obj.Image = url end
+                else obj.Image = url end
+            else obj.Image = url end
+        end)
+    end
+
+    SetDirectImage(flIconShadow, "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png")
+    flIconShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+    flIconShadow.ImageTransparency = 0.6
+    flIconShadow.ZIndex = 5
+
+    SetDirectImage(flIcon, "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png")
+    flIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+    flIcon.Rotation = 0
+    flIcon.ZIndex = 10
+
     flIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
     flIcon.Rotation = 0
     flIcon.ZIndex = 10
