@@ -11,8 +11,10 @@ local HttpService = game:GetService("HttpService")
 local LocalPlayer = Players.LocalPlayer
 
 local function LoadCustomImage(urlOrAsset, defaultAsset)
-    defaultAsset = defaultAsset or "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png"
-    if not urlOrAsset or urlOrAsset == "" then return defaultAsset end
+    -- CHỐNG CRASH DÒNG 13: KIỂM TRA NẾU KHÔNG PHẢI CHUỖI LINK THÌ TRẢ VỀ LUÔN LOGO SYL CỦA BẠN
+    if not urlOrAsset or type(urlOrAsset) ~= "string" or urlOrAsset == "" then 
+        return "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png" 
+    end
 
     local assetNum = urlOrAsset:match("%d+")
     if urlOrAsset:find("roblox%.com") and assetNum then
@@ -42,6 +44,7 @@ local function LoadCustomImage(urlOrAsset, defaultAsset)
     end
     return urlOrAsset
 end
+
 
 local StarHubUI = {
     Version = "5.3.0",
