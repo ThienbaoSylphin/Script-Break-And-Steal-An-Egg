@@ -64,7 +64,7 @@ local StarHubUI = {
         WallpaperDimming = 0.35,
         BackgroundEffect = "Floating Bubbles",
         CustomWallpaperId = "",
-        CustomLogoUrl = "rbxassetid://83869254770810"
+        CustomLogoUrl = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png"
     },
     Themes = {
         NeverloseCrimson = {
@@ -1563,7 +1563,7 @@ function StarHubUI:CreateWindow(cfg)
     flIconShadow.Position = UDim2.new(0.5, 1, 0.5, 2)
     flIconShadow.BackgroundTransparency = 1
     flIconShadow.ScaleType = Enum.ScaleType.Fit
-    flIconShadow.Image = "rbxassetid://83869254770810"
+    flIconShadow.Image = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png"
     flIconShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
     flIconShadow.ImageTransparency = 0.6
     flIconShadow.ZIndex = 5
@@ -1576,7 +1576,7 @@ function StarHubUI:CreateWindow(cfg)
     flIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
     flIcon.BackgroundTransparency = 1
     flIcon.ScaleType = Enum.ScaleType.Fit
-    flIcon.Image = "rbxassetid://83869254770810"
+    flIcon.Image = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png"
     flIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
     flIcon.Rotation = 0
     flIcon.ZIndex = 10
