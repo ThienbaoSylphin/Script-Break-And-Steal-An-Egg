@@ -26,7 +26,7 @@ local Config = {
     ConfigRoot = "mariohub/configs",
     DefaultAssets = {
         logo = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/refs/heads/main/image_7070ef58.jpg",
-        logo_halloween = "https://raw.githubusercontent.com/xDTaraZz/Roblox-Scripts/main/logo_halloween.png",
+        logo_halloween = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/refs/heads/main/image_7070ef58.jpg",
     },
     SeasonTheme = "Halloween",
     FontDir = "mariohub/fonts",
