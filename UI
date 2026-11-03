@@ -20,15 +20,16 @@ local Library = {
 }
 
 local Config = {
-    GuiAttribute = "MarioHubUI",
-    Root = "mariohub",
-    AssetDir = "mariohub/assets",
-    ConfigRoot = "mariohub/configs",
+    GuiAttribute = "SylPhinHubUI",         -- Đổi Attribute nhận diện
+    Root = "sylphinhub",                   -- Đổi tên thư mục gốc để xóa dính vết cũ
+    AssetDir = "sylphinhub/assets",        -- Đổi đường dẫn lưu asset mới
+    ConfigRoot = "sylphinhub/configs",
     DefaultAssets = {
         logo = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/refs/heads/main/image_7070ef58.jpg",
         logo_halloween = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/refs/heads/main/image_7070ef58.jpg",
     },
     SeasonTheme = "Halloween",
+}
     FontDir = "mariohub/fonts",
     HttpTimeout = 8,
     FontTimeout = 20,
