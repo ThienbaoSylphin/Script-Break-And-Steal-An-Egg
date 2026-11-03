@@ -11,10 +11,8 @@ local HttpService = game:GetService("HttpService")
 local LocalPlayer = Players.LocalPlayer
 
 local function LoadCustomImage(urlOrAsset, defaultAsset)
-    -- CHỐNG CRASH DÒNG 13: KIỂM TRA NẾU KHÔNG PHẢI CHUỖI LINK THÌ TRẢ VỀ LUÔN LOGO SYL CỦA BẠN
-    if not urlOrAsset or type(urlOrAsset) ~= "string" or urlOrAsset == "" then 
-        return "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png" 
-    end
+    defaultAsset = defaultAsset or "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png"
+    if not urlOrAsset or urlOrAsset == "" then return defaultAsset end
 
     local assetNum = urlOrAsset:match("%d+")
     if urlOrAsset:find("roblox%.com") and assetNum then
@@ -44,7 +42,6 @@ local function LoadCustomImage(urlOrAsset, defaultAsset)
     end
     return urlOrAsset
 end
-
 
 local StarHubUI = {
     Version = "5.3.0",
@@ -287,7 +284,7 @@ local StarHubUI = {
     }
 }
 
-local Theme = (StarHubUI.Settings.CurrentTheme and StarHubUI.Themes[StarHubUI.Settings.CurrentTheme]) or StarHubUI.Themes.ObsidianViolet
+local Theme = (StarHubUI.Settings.CurrentTheme and StarHubUI.Themes[StarHubUI.Settings.CurrentTheme]) or StarHubUI.Themes.NeverloseCrimson
 
 local ThemeRegistry = {
     Gradients = {},
@@ -1493,69 +1490,49 @@ function StarHubUI:CreateWindow(cfg)
     ContentArea.Position = UDim2.new(0, 175, 0, 0)
     ContentArea.BackgroundTransparency = 1
 
-        -- ============================================================================
-    -- LÀM LẠI NÚT DI ĐỘNG MỚI TINH - ÉP ĐỌC TRỰC TIẾP LINK GITHUB LOGO SYL (KHÔNG BỊ ĐEN)
-    -- ============================================================================
-    local FloatingSquircle = Instance.new("ImageButton", ScreenGui)
-    FloatingSquircle.Name = "SylPhinHub_ToggleBtn"
+        local FloatingSquircle = Instance.new("Frame", ScreenGui)
+    FloatingSquircle.Name = "StarHubUI_FloatingSquircle"
     FloatingSquircle.Size = UDim2.new(0, 52, 0, 52)
     FloatingSquircle.Position = UDim2.new(0, 20, 0.45, 0)
-    FloatingSquircle.BackgroundColor3 = Color3.fromRGB(15, 12, 22) -- Nền tối tím nhẹ hợp logo
-    FloatingSquircle.BackgroundTransparency = 0.1
+    FloatingSquircle.BackgroundColor3 = Color3.fromRGB(12, 13, 17)
+    FloatingSquircle.BackgroundTransparency = 0.05
     FloatingSquircle.Visible = StarHubUI.Settings.ShowFloatingToggle
     Instance.new("UICorner", FloatingSquircle).CornerRadius = UDim.new(1, 0)
 
-    -- Hàm xử lý ép buộc executor đọc link ảnh trực tiếp không thông qua hàm lọc lỗi của thư viện
-    local function SetDirectButtonImage(obj, url)
-        pcall(function()
-            local safeName = "sylphin_btn_direct_logo.png"
-            if writefile and isfile and game:HttpGet then
-                if not isfile(safeName) then
-                    local res = game:HttpGet(url)
-                    if res and #res > 100 then writefile(safeName, res) end
-                end
-                if isfile(safeName) then
-                    if getcustomasset then obj.Image = getcustomasset(safeName)
-                    elseif getsynasset then obj.Image = getsynasset(safeName)
-                    else obj.Image = url end
-                else obj.Image = url end
-            else obj.Image = url end
-        end)
-    end
+    local flScale = Instance.new("UIScale", FloatingSquircle)
+    flScale.Scale = 1
 
-    SetDirectButtonImage(FloatingSquircle, "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png")
-
-    -- Viền sáng Neon Tím xoay quanh nút di động
     local flCircleStroke = Instance.new("UIStroke", FloatingSquircle)
-    flCircleStroke.Color = Color3.fromRGB(124, 58, 237)
-    flCircleStroke.Thickness = 3.2
-    flCircleStroke.Transparency = 0.2
+    flCircleStroke.Color = Color3.fromRGB(255, 255, 255)
+    flCircleStroke.Thickness = 3.6
+    flCircleStroke.Transparency = 0
 
     local flGrad = Instance.new("UIGradient", flCircleStroke)
     flGrad.Name = "ChasingRingGrad"
+    local c1 = Theme.Grad1 or Theme.Accent
+    local c2 = Theme.Grad2 or Theme.AccentLight
     flGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(124, 58, 237)),
-        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(192, 132, 252)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(124, 58, 237))
+        ColorSequenceKeypoint.new(0.00, c1),
+        ColorSequenceKeypoint.new(0.50, c2),
+        ColorSequenceKeypoint.new(1.00, c1)
     })
+    flGrad.Rotation = 0
     RegisterElement("Gradients", flGrad)
 
-    -- Hiệu ứng tỏa hào quang tím mờ dưới nền nút
+    RegisterElement("Boxes", FloatingSquircle)
+
     local flAura = Instance.new("Frame", FloatingSquircle)
     flAura.Name = "AuraGlow"
     flAura.AnchorPoint = Vector2.new(0.5, 0.5)
     flAura.Position = UDim2.new(0.5, 0, 0.5, 0)
     flAura.Size = UDim2.new(1, 10, 1, 10)
-    flAura.BackgroundColor3 = Color3.fromRGB(124, 58, 237)
+    flAura.BackgroundColor3 = Theme.Accent
     flAura.BackgroundTransparency = 0.88
     flAura.BorderSizePixel = 0
     flAura.ZIndex = 0
     Instance.new("UICorner", flAura).CornerRadius = UDim.new(1, 0)
+    RegisterElement("Accents", flAura)
 
-    local flScale = Instance.new("UIScale", FloatingSquircle)
-    flScale.Scale = 1
-
-    -- Vòng lặp làm hiệu ứng hào quang co giãn mượt mà
     task.spawn(function()
         while FloatingSquircle and FloatingSquircle.Parent do
             Tween(flAura, 1.4, {Size = UDim2.new(1, 16, 1, 16), BackgroundTransparency = 0.82}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
@@ -1566,57 +1543,73 @@ function StarHubUI:CreateWindow(cfg)
         end
     end)
 
-    -- Hiệu ứng xoay vòng viền Neon tăng độ mượt
+    local flLogoGlow = Instance.new("Frame", FloatingSquircle)
+    flLogoGlow.Name = "LogoUnderglow"
+    flLogoGlow.AnchorPoint = Vector2.new(0.5, 0.5)
+    flLogoGlow.Position = UDim2.new(0.5, 0, 0.5, 0)
+    flLogoGlow.Size = UDim2.new(0, 30, 0, 30)
+    flLogoGlow.BackgroundColor3 = Theme.Accent
+    flLogoGlow.BackgroundTransparency = 0.75
+    flLogoGlow.BorderSizePixel = 0
+    flLogoGlow.ZIndex = 3
+    Instance.new("UICorner", flLogoGlow).CornerRadius = UDim.new(1, 0)
+    RegisterElement("Accents", flLogoGlow)
+
+    -- ĐÃ THAY ĐỔI HÌNH NỀN BÓNG ĐỔ SANG LOGO SYL CỦA BẠN TẠI ĐÂY
+    local flIconShadow = Instance.new("ImageLabel", FloatingSquircle)
+    flIconShadow.Name = "IconShadow"
+    flIconShadow.AnchorPoint = Vector2.new(0.5, 0.5)
+    flIconShadow.Size = UDim2.new(0, 28, 0, 28)
+    flIconShadow.Position = UDim2.new(0.5, 1, 0.5, 2)
+    flIconShadow.BackgroundTransparency = 1
+    flIconShadow.ScaleType = Enum.ScaleType.Fit
+    flIconShadow.Image = "rbxassetid://83869254770810"
+    flIconShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+    flIconShadow.ImageTransparency = 0.6
+    flIconShadow.ZIndex = 5
+
+    -- ĐÃ THAY ĐỔI LOGO CHÍNH NÚT TRÒN SANG LOGO SYL CỦA BẠN TẠI ĐÂY
+    local flIcon = Instance.new("ImageLabel", FloatingSquircle)
+    flIcon.Name = "MainLogo"
+    flIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+    flIcon.Size = UDim2.new(0, 28, 0, 28)
+    flIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
+    flIcon.BackgroundTransparency = 1
+    flIcon.ScaleType = Enum.ScaleType.Fit
+    flIcon.Image = "rbxassetid://83869254770810"
+    flIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+    flIcon.Rotation = 0
+    flIcon.ZIndex = 10
+    local flIconScale = Instance.new("UIScale", flIcon)
+
     RunService.RenderStepped:Connect(function()
         if flGrad and flGrad.Parent then
-            flGrad.Rotation = (tick() * 100) % 360
+            flGrad.Rotation = (tick() * 120) % 360
         end
     end)
 
-    -- Cơ chế kéo thả di động nút trên màn hình game
-    local dragging = false
-    local dragInput, dragStart, startPos
-    FloatingSquircle.InputBegan:Connect(function(inp)
-        if inp.UserInputType == Enum.UserInputType.MouseButton1 or inp.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            dragStart = inp.Position
-            startPos = FloatingSquircle.Position
-            inp.Changed:Connect(function()
-                if inp.UserInputState == Enum.UserInputState.End then dragging = false end
-            end)
-        end
-    end)
+    AttachDrag(FloatingSquircle)
 
-    FloatingSquircle.InputChanged:Connect(function(inp)
-        if inp.UserInputType == Enum.UserInputType.MouseMovement or inp.UserInputType == Enum.UserInputType.Touch then
-            dragInput = inp
-        end
-    end)
+    local flBtn = Instance.new("TextButton", FloatingSquircle)
+    flBtn.Name = "HitboxButton"
+    flBtn.Size = UDim2.new(1, 0, 1, 0)
+    flBtn.BackgroundTransparency = 1
+    flBtn.Text = ""
+    flBtn.ZIndex = 25
 
-    UserInputService.InputChanged:Connect(function(inp)
-        if inp == dragInput and dragging then
-            local delta = inp.Position - dragStart
-            Tween(FloatingSquircle, 0.04, {
-                Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-            }, Enum.EasingStyle.Linear)
-        end
-    end)
-
-    -- Tái định nghĩa lại tên hitbox của nút cũ để tương thích với các hàm sự kiện hov/click chuột phía dưới
-    local flBtn = FloatingSquircle 
-
-    local function UpdateFloatingToggleVisual()
+    UpdateFloatingToggleVisual = function()
         if not FloatingSquircle or not FloatingSquircle.Parent then return end
         local isOpen = MainWindow and MainWindow.Visible
         if isOpen then
-            Tween(flCircleStroke, 0.25, {Thickness = 3.6, Transparency = 0.1})
+            Tween(flCircleStroke, 0.25, {Thickness = 3.6, Transparency = 0})
             Tween(flAura, 0.25, {BackgroundTransparency = 0.80})
+            Tween(flLogoGlow, 0.25, {BackgroundTransparency = 0.65})
         else
-            Tween(flCircleStroke, 0.25, {Thickness = 3.0, Transparency = 0.3})
+            Tween(flCircleStroke, 0.25, {Thickness = 3.2, Transparency = 0.25})
             Tween(flAura, 0.25, {BackgroundTransparency = 0.90})
+            Tween(flLogoGlow, 0.25, {BackgroundTransparency = 0.85})
         end
     end
-
 
     flBtn.MouseEnter:Connect(function()
         Tween(flScale, 0.2, {Scale = 1.1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
