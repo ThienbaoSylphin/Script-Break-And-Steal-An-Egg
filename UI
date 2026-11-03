@@ -17,7 +17,46 @@ local Library = {
     Unloaded = false,
     Window = nil,
 }
-
+-- Bổ sung hàm CreateWindow cho Library
+function Library:CreateWindow(Settings)
+    Settings = Settings or {}
+    
+    local Window = {
+        Title = Settings.Title or "SylPhin Hub",
+        SubTitle = Settings.SubTitle or "",
+        Tabs = {}
+    }
+    
+    -- Thêm hàm tạo Tab
+    function Window:AddTab(title, icon, desc)
+        local Tab = {}
+        
+        function Tab:AddLeftGroupbox(name)
+            local Group = {}
+            function Group:AddToggle(key, info)
+                if info.Callback then info.Callback(info.Default or false) end
+                return { AddKeyPicker = function() end }
+            end
+            function Group:AddSlider(key, info) return {} end
+            function Group:AddDropdown(key, info) return {} end
+            function Group:AddInput(key, info) return {} end
+            function Group:AddButton(text, func) return {} end
+            function Group:AddLabel(text) 
+                return { SetText = function() end } 
+            end
+            return Group
+        end
+        
+        function Tab:AddRightGroupbox(name)
+            return Tab:AddLeftGroupbox(name)
+        end
+        
+        return Tab
+    end
+    
+    self.Window = Window
+    return Window
+end
 local Config = {
     GuiAttribute = "SylPhinUI",
     Root = "sylphin",
