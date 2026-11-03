@@ -11,7 +11,7 @@ local HttpService = game:GetService("HttpService")
 local LocalPlayer = Players.LocalPlayer
 
 local function LoadCustomImage(urlOrAsset, defaultAsset)
-    defaultAsset = defaultAsset or "rbxassetid://10709819149"
+    defaultAsset = defaultAsset or "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png"
     if not urlOrAsset or urlOrAsset == "" then return defaultAsset end
 
     local assetNum = urlOrAsset:match("%d+")
@@ -64,7 +64,7 @@ local StarHubUI = {
         WallpaperDimming = 0.35,
         BackgroundEffect = "Floating Bubbles",
         CustomWallpaperId = "",
-        CustomLogoUrl = "rbxassetid://83869254770810"
+        CustomLogoUrl = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png"
     },
     Themes = {
         NeverloseCrimson = {
