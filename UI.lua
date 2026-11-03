@@ -64,7 +64,7 @@ local StarHubUI = {
         WallpaperDimming = 0.35,
         BackgroundEffect = "Floating Bubbles",
         CustomWallpaperId = "",
-        CustomLogoUrl = "https://raw.githubusercontent.com/nibamako08-code/xd/main/content.png"
+        CustomLogoUrl = "rbxassetid://83869254770810"
     },
     Themes = {
         NeverloseCrimson = {
