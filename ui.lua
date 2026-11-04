@@ -64,7 +64,7 @@ local StarHubUI = {
         WallpaperDimming = 0.35,
         BackgroundEffect = "Floating Bubbles",
         CustomWallpaperId = "",
-        CustomLogoUrl = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png"
+        CustomLogoUrl = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/image.png"
     },
     Themes = {
         NeverloseCrimson = {
@@ -743,7 +743,7 @@ function StarHubUI:CreateWindow(cfg)
         pcall(function() savedKey = Enum.KeyCode[StarHubUI.Settings.ToggleKey] end)
     end
     local ToggleKey = savedKey or cfg.ToggleKey or Enum.KeyCode.RightControl
-    local LogoInput = cfg.Logo or StarHubUI.Settings.CustomLogoUrl or "https://raw.githubusercontent.com/nibamako08-code/xd/main/content.png"
+    local LogoInput = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/image.png"
     local ResolvedLogo = LoadCustomImage(LogoInput, StarHubUI.Icons.Logo)
 
     local GuiParent = GetSafeGuiParent()
@@ -1249,39 +1249,42 @@ function StarHubUI:CreateWindow(cfg)
     local isMinimized = false
     local UpdateFloatingToggleVisual = nil
 
+    local windowTween = nil
     local function ToggleMainWindow(show)
         if show == nil then show = not MainWindow.Visible end
+
+        if windowTween then
+            pcall(function() windowTween:Cancel() end)
+            windowTween = nil
+        end
+
         if show then
             MainWindow.Visible = true
-            winScale.Scale = 0.8
-            MainWindow.Position = UDim2.new(0.5, -WinSize.X.Offset/2, 0.5, -WinSize.Y.Offset/2)
+            MainWindow.ClipsDescendants = isMinimized
             MainWindow.Size = isMinimized and UDim2.new(0, WinSize.X.Offset, 0, 44) or WinSize
             if isMinimized then
                 HeaderLine.Visible = false
-                MainWindow.ClipsDescendants = true
             else
                 HeaderLine.Visible = true
-                MainWindow.ClipsDescendants = false
                 if BodyContainer then BodyContainer.Visible = true end
             end
+
+            winScale.Scale = 0.965
             PlaySound("ToggleOn")
-            Tween(winScale, 0.35, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+            windowTween = Tween(winScale, 0.22, {Scale = 1}, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
         else
             PlaySound("ToggleOff")
-            local tw = Tween(winScale, 0.22, {Scale = 0.8}, Enum.EasingStyle.Back, Enum.EasingDirection.In)
-            tw.Completed:Connect(function()
-                if not MainWindow.Visible or winScale.Scale <= 0.85 then
+            windowTween = Tween(winScale, 0.16, {Scale = 0.965}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+            local closingTween = windowTween
+            closingTween.Completed:Connect(function(playbackState)
+                if playbackState == Enum.PlaybackState.Completed and windowTween == closingTween then
                     MainWindow.Visible = false
                     winScale.Scale = 1
-                end
-            end)
-            task.delay(0.24, function()
-                if not MainWindow.Visible or winScale.Scale <= 0.85 then
-                    MainWindow.Visible = false
-                    winScale.Scale = 1
+                    windowTween = nil
                 end
             end)
         end
+
         if UpdateFloatingToggleVisual then
             pcall(UpdateFloatingToggleVisual)
         end
@@ -1389,32 +1392,27 @@ function StarHubUI:CreateWindow(cfg)
     LogoHolder.Position = UDim2.new(0, 0, 0, 6)
     LogoHolder.BackgroundTransparency = 1
 
-    local BrandSquircle = Instance.new("TextButton", LogoHolder)
+    -- Menu brand: show the logo image directly, with no square card/backplate.
+    local BrandSquircle = Instance.new("ImageButton", LogoHolder)
+    BrandSquircle.Name = "BrandLogo"
     BrandSquircle.Size = UDim2.new(0, 74, 0, 74)
-    BrandSquircle.Position = UDim2.new(0.5, -37, 0.5, -37)
-    BrandSquircle.BackgroundColor3 = Theme.Box
-    BrandSquircle.Text = ""
+    BrandSquircle.AnchorPoint = Vector2.new(0.5, 0.5)
+    BrandSquircle.Position = UDim2.new(0.5, 0, 0.5, 0)
+    BrandSquircle.BackgroundTransparency = 1
+    BrandSquircle.BorderSizePixel = 0
     BrandSquircle.AutoButtonColor = false
-    Instance.new("UICorner", BrandSquircle).CornerRadius = UDim.new(0, 20)
-    local bsStroke = Instance.new("UIStroke", BrandSquircle)
-    bsStroke.Thickness = 1.6
-    ApplyGradient(bsStroke, Theme.Grad1, Theme.Grad2, 45)
-    RegisterElement("Boxes", BrandSquircle)
-    RegisterElement("Borders", bsStroke)
+    BrandSquircle.Image = ResolvedLogo
+    BrandSquircle.ImageColor3 = Color3.fromRGB(255, 255, 255)
+    BrandSquircle.ScaleType = Enum.ScaleType.Fit
 
-    local BrandIcon = Instance.new("ImageLabel", BrandSquircle)
-    BrandIcon.Size = UDim2.new(0, 62, 0, 62)
-    BrandIcon.Position = UDim2.new(0.5, -31, 0.5, -31)
-    BrandIcon.BackgroundTransparency = 1
-    BrandIcon.ScaleType = Enum.ScaleType.Fit
-    BrandIcon.Image = ResolvedLogo
-    BrandIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+    local brandScale = Instance.new("UIScale", BrandSquircle)
+    brandScale.Scale = 1
 
     BrandSquircle.MouseEnter:Connect(function()
-        Tween(BrandSquircle, 0.15, {Size = UDim2.new(0, 80, 0, 80), Position = UDim2.new(0.5, -40, 0.5, -40)})
+        Tween(brandScale, 0.16, {Scale = 1.06}, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
     end)
     BrandSquircle.MouseLeave:Connect(function()
-        Tween(BrandSquircle, 0.15, {Size = UDim2.new(0, 74, 0, 74), Position = UDim2.new(0.5, -37, 0.5, -37)})
+        Tween(brandScale, 0.16, {Scale = 1}, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
     end)
     BrandSquircle.MouseButton1Click:Connect(function()
         MicroBounce(BrandSquircle)
