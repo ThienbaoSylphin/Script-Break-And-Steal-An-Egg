@@ -349,6 +349,7 @@ for iconName, fileName in pairs({
     Settings    = "settings.png",
     Sword       = "sword.png",
     ChartColumn = "chart-column-big.png",
+    Info        = "info.png",
 }) do
     pcall(function() StarHubUI:AddIcon(iconName, IconRepo .. fileName) end)
 end
