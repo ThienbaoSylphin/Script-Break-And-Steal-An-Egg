@@ -1565,7 +1565,7 @@ function StarHubUI:CreateWindow(cfg)
     flIconShadow.Position = UDim2.new(0.5, 1, 0.5, 2)
     flIconShadow.BackgroundTransparency = 1
     flIconShadow.ScaleType = Enum.ScaleType.Fit
-    flIconShadow.Image = "rbxassetid://83869254770810"
+    flIconShadow.Image = "rbxassetid://7111868109"
     flIconShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
     flIconShadow.ImageTransparency = 0.6
     flIconShadow.ZIndex = 5
@@ -1578,7 +1578,7 @@ function StarHubUI:CreateWindow(cfg)
     flIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
     flIcon.BackgroundTransparency = 1
     flIcon.ScaleType = Enum.ScaleType.Fit
-    flIcon.Image = "rbxassetid://83869254770810"
+    flIcon.Image = "rbxassetid://7111868109"
     flIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
     flIcon.Rotation = 0
     flIcon.ZIndex = 10
