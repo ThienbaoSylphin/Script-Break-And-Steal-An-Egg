@@ -4224,4 +4224,4 @@ if not _G.STARHUB_LIBRARY_ONLY then
         })
     end
 
-return StarHubUI bạn xóa cái phần nút bật tắt kia rồi tạo lại nút bật tắt khắc với logo là https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png
+return StarHubUI
