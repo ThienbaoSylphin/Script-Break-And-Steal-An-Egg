@@ -23,7 +23,12 @@ local function LoadCustomImage(urlOrAsset, defaultAsset)
     end
 
     if string.find(urlOrAsset, "^http") and writefile and isfile then
-        local safeName = "starhub_custom_logo_" .. tostring(math.abs(urlOrAsset:len() * 37 + (urlOrAsset:byte(1) or 0) * 17)) .. ".png"
+        local hash = 5381
+        for i = 1, #urlOrAsset do
+            hash = (hash * 33 + urlOrAsset:byte(i)) % 4294967296
+        end
+        local baseName = (urlOrAsset:match("([^/]+)%.%w+$") or "img"):gsub("[^%w_%-]", "_")
+        local safeName = "starhub_" .. baseName .. "_" .. tostring(hash) .. ".png"
         pcall(function()
             if not isfile(safeName) then
                 local res = game:HttpGet(urlOrAsset)
@@ -287,6 +292,67 @@ local StarHubUI = {
 }
 
 local Theme = (StarHubUI.Settings.CurrentTheme and StarHubUI.Themes[StarHubUI.Settings.CurrentTheme]) or StarHubUI.Themes.NeverloseCrimson
+
+
+-- CUSTOM ICON MANAGER
+-- Accepts Roblox asset IDs, rbxassetid:// IDs, or image URLs supported by the runtime.
+StarHubUI.CustomIcons = StarHubUI.CustomIcons or {}
+local function NormalizeIconAsset(asset)
+    if asset == nil then return nil end
+    local value = tostring(asset):match("^%s*(.-)%s*$")
+    if value == "" then return nil end
+    if value:match("^%d+$") then return "rbxassetid://" .. value end
+    if value:match("^rbxassetid://") or value:match("^rbxthumb://") or value:match("^https?://") then
+        return value
+    end
+    return nil
+end
+
+function StarHubUI:AddIcon(name, asset)
+    assert(type(name) == "string" and name ~= "", "AddIcon: name must be a non-empty string")
+    local normalized = NormalizeIconAsset(asset)
+    assert(normalized, "AddIcon: asset must be an asset ID or image URL")
+    -- Image URLs cannot be shown directly by ImageLabel: download + convert to a local asset.
+    if normalized:match("^https?://") then
+        local resolved = LoadCustomImage(normalized, self.Icons.Logo)
+        if type(resolved) ~= "string" or resolved:match("^https?://") then
+            resolved = self.Icons.Logo -- executor can't load files: fall back to the default logo
+        end
+        self.CustomIconSources = self.CustomIconSources or {}
+        self.CustomIconSources[name] = normalized
+        normalized = resolved
+    end
+    self.CustomIcons[name] = normalized
+    self.Icons[name] = normalized
+    return normalized
+end
+
+function StarHubUI:GetIcon(name)
+    return self.CustomIcons[name] or self.Icons[name]
+end
+
+function StarHubUI:RemoveIcon(name)
+    if self.CustomIcons[name] then
+        self.CustomIcons[name] = nil
+        self.Icons[name] = nil
+        return true
+    end
+    return false
+end
+
+-- Custom icons (GitHub raw PNGs)
+local IconRepo = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/"
+for iconName, fileName in pairs({
+    Zap         = "zap.png",
+    House       = "house.png",
+    Backpack    = "backpack.png",
+    Settings    = "settings.png",
+    Sword       = "sword.png",
+    ChartColumn = "chart-column-big.png",
+}) do
+    pcall(function() StarHubUI:AddIcon(iconName, IconRepo .. fileName) end)
+end
+
 
 local ThemeRegistry = {
     Gradients = {},
@@ -1252,7 +1318,6 @@ function StarHubUI:CreateWindow(cfg)
     local windowTween = nil
     local function ToggleMainWindow(show)
         if show == nil then show = not MainWindow.Visible end
-
         if windowTween then
             pcall(function() windowTween:Cancel() end)
             windowTween = nil
@@ -1262,19 +1327,12 @@ function StarHubUI:CreateWindow(cfg)
             MainWindow.Visible = true
             MainWindow.ClipsDescendants = isMinimized
             MainWindow.Size = isMinimized and UDim2.new(0, WinSize.X.Offset, 0, 44) or WinSize
-            if isMinimized then
-                HeaderLine.Visible = false
-            else
-                HeaderLine.Visible = true
-                if BodyContainer then BodyContainer.Visible = true end
-            end
-
-            winScale.Scale = 0.965
-            PlaySound("ToggleOn")
-            windowTween = Tween(winScale, 0.22, {Scale = 1}, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+            HeaderLine.Visible = not isMinimized
+            if not isMinimized and BodyContainer then BodyContainer.Visible = true end
+            winScale.Scale = 0.985
+            windowTween = Tween(winScale, 0.14, {Scale = 1}, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
         else
-            PlaySound("ToggleOff")
-            windowTween = Tween(winScale, 0.16, {Scale = 0.965}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+            windowTween = Tween(winScale, 0.11, {Scale = 0.99}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
             local closingTween = windowTween
             closingTween.Completed:Connect(function(playbackState)
                 if playbackState == Enum.PlaybackState.Completed and windowTween == closingTween then
@@ -2072,7 +2130,7 @@ function StarHubUI:CreateWindow(cfg)
     function WindowObj:CreateTab(tabConfig)
         tabConfig = tabConfig or {}
         local TabTitle = tabConfig.Title or "Tab"
-        local TabIcon = tabConfig.IconId or StarHubUI.Icons.Dashboard
+        local TabIcon = StarHubUI:GetIcon(tabConfig.IconName) or NormalizeIconAsset(tabConfig.IconId) or tabConfig.IconId or StarHubUI.Icons.Dashboard
         local BadgeText = tabConfig.BadgeText
         local LayoutOrder = tabConfig.LayoutOrder or (#WindowObj.Tabs + 5)
 
@@ -2273,6 +2331,14 @@ function StarHubUI:CreateWindow(cfg)
             LeftCol = LeftCol,
             RightCol = RightCol
         }
+
+        TabObj.IconImage = tIcon
+        function TabObj:SetIcon(iconOrName)
+            local asset = StarHubUI:GetIcon(iconOrName) or NormalizeIconAsset(iconOrName)
+            if not asset then return false end
+            self.IconImage.Image = asset
+            return true
+        end
 
         TabBtn.MouseEnter:Connect(function()
             if WindowObj.ActiveTab ~= TabObj then
@@ -4132,10 +4198,10 @@ if not _G.STARHUB_LIBRARY_ONLY then
 
         Window:AddNavHeader("MODULES", 1)
 
-        local DashTab = Window:CreateTab({ Title = "Dashboard", IconId = StarHubUI.Icons.Dashboard, BadgeText = "LIVE", LayoutOrder = 2 })
+        local DashTab = Window:CreateTab({ Title = "Dashboard", IconId = StarHubUI.Icons.ChartColumn or StarHubUI.Icons.Dashboard, BadgeText = "LIVE", LayoutOrder = 2 })
         Window:CreateDualColumnDashboard(DashTab)
 
-        local CombatTab = Window:CreateTab({ Title = "Combat & Move", IconId = StarHubUI.Icons.Combat, LayoutOrder = 3 })
+        local CombatTab = Window:CreateTab({ Title = "Combat & Move", IconId = StarHubUI.Icons.Sword or StarHubUI.Icons.Combat, LayoutOrder = 3 })
         local AimBox = CombatTab:CreateGroupBox("Left", "AIMBOT CORE ENGINE", "AIM", StarHubUI.Icons.Combat)
         AimBox:AddToggle("Aimbot Tracking", "Locks hitscan vectors to closest target", true, function(v) end)
         AimBox:AddDropdown("Target Bone", {"Head (Critical)", "UpperTorso", "HumanoidRootPart"}, "Head (Critical)", function(v) end)
@@ -4165,7 +4231,7 @@ if not _G.STARHUB_LIBRARY_ONLY then
         WorldBox:AddToggle("Player Chams Highlight", "Silhouettes character models through walls", true, function(v) end)
         WorldBox:AddToggle("Fullbright Night Vision", "Removes shadows and maximizes map illumination", true, function(v) end)
 
-        local TeleTab = Window:CreateTab({ Title = "World Teleport", IconId = StarHubUI.Icons.Teleport, LayoutOrder = 5 })
+        local TeleTab = Window:CreateTab({ Title = "World Teleport", IconId = StarHubUI.Icons.House or StarHubUI.Icons.Teleport, LayoutOrder = 5 })
         local WpBox = TeleTab:CreateGroupBox("Left", "COORDINATE WAYPOINTS", "LOCATIONS", StarHubUI.Icons.Teleport)
         local dest = "Spawn Lobby"
         WpBox:AddDropdown("Select Destination", {"Spawn Lobby", "Egg Market", "Secret Vault", "Safe Zone", "VIP Lounge", "Sky Islands"}, "Spawn Lobby", function(w) dest = w end)
