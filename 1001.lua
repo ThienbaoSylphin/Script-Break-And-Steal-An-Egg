@@ -280,7 +280,8 @@ local StarHubUI = {
         Bell        = "rbxassetid://10709752996",
         Info        = "rbxassetid://10709752996",
         Check       = "rbxassetid://10709790644",
-        Zap         = "rbxassetid://10709791882"
+        Zap         = "rbxassetid://131462936913568"
+        MyLogo      = "rbxassetid://130580039492402",
     }
 }
 
