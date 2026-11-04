@@ -1492,164 +1492,149 @@ function StarHubUI:CreateWindow(cfg)
     ContentArea.Position = UDim2.new(0, 175, 0, 0)
     ContentArea.BackgroundTransparency = 1
 
-        local FloatingSquircle = Instance.new("Frame", ScreenGui)
-    FloatingSquircle.Name = "StarHubUI_FloatingSquircle"
-    FloatingSquircle.Size = UDim2.new(0, 52, 0, 52)
-    FloatingSquircle.Position = UDim2.new(0, 20, 0.45, 0)
-    FloatingSquircle.BackgroundColor3 = Color3.fromRGB(12, 13, 17)
-    FloatingSquircle.BackgroundTransparency = 0.05
-    FloatingSquircle.Visible = StarHubUI.Settings.ShowFloatingToggle
-    Instance.new("UICorner", FloatingSquircle).CornerRadius = UDim.new(1, 0)
+    -- FLOATING TOGGLE REDESIGN
+    -- Nút mới dạng rounded-square, dùng logo SylPhin cố định.
+    local ToggleLogoUrl = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png"
+    local ToggleLogoAsset = LoadCustomImage(ToggleLogoUrl, StarHubUI.Icons.Logo)
+
+    local FloatingSquircle = Instance.new("Frame", ScreenGui)
+    FloatingSquircle.Name = "StarHubUI_FloatingToggle"
+    FloatingSquircle.Size = UDim2.new(0, 60, 0, 60)
+    FloatingSquircle.Position = UDim2.new(0, 22, 0.45, 0)
+    FloatingSquircle.BackgroundColor3 = Theme.Box
+    FloatingSquircle.BackgroundTransparency = 0.06
+    FloatingSquircle.BorderSizePixel = 0
+    FloatingSquircle.Visible = StarHubUI.Settings.ShowFloatingToggle ~= false
+    FloatingSquircle.ZIndex = 20
+    Instance.new("UICorner", FloatingSquircle).CornerRadius = UDim.new(0, 18)
 
     local flScale = Instance.new("UIScale", FloatingSquircle)
     flScale.Scale = 1
 
-    local flCircleStroke = Instance.new("UIStroke", FloatingSquircle)
-    flCircleStroke.Color = Color3.fromRGB(255, 255, 255)
-    flCircleStroke.Thickness = 3.6
-    flCircleStroke.Transparency = 0
+    local flStroke = Instance.new("UIStroke", FloatingSquircle)
+    flStroke.Name = "ToggleStroke"
+    flStroke.Color = Theme.Accent
+    flStroke.Thickness = 1.6
+    flStroke.Transparency = 0.12
 
-    local flGrad = Instance.new("UIGradient", flCircleStroke)
-    flGrad.Name = "ChasingRingGrad"
-    local c1 = Theme.Grad1 or Theme.Accent
-    local c2 = Theme.Grad2 or Theme.AccentLight
+    local flGrad = Instance.new("UIGradient", flStroke)
+    flGrad.Name = "ToggleGradient"
     flGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0.00, c1),
-        ColorSequenceKeypoint.new(0.50, c2),
-        ColorSequenceKeypoint.new(1.00, c1)
+        ColorSequenceKeypoint.new(0, Theme.Grad1 or Theme.Accent),
+        ColorSequenceKeypoint.new(1, Theme.Grad2 or Theme.AccentLight)
     })
-    flGrad.Rotation = 0
+    flGrad.Rotation = 35
     RegisterElement("Gradients", flGrad)
-
     RegisterElement("Boxes", FloatingSquircle)
+    RegisterElement("Borders", flStroke)
 
-    local flAura = Instance.new("Frame", FloatingSquircle)
-    flAura.Name = "AuraGlow"
-    flAura.AnchorPoint = Vector2.new(0.5, 0.5)
-    flAura.Position = UDim2.new(0.5, 0, 0.5, 0)
-    flAura.Size = UDim2.new(1, 10, 1, 10)
-    flAura.BackgroundColor3 = Theme.Accent
-    flAura.BackgroundTransparency = 0.88
-    flAura.BorderSizePixel = 0
-    flAura.ZIndex = 0
-    Instance.new("UICorner", flAura).CornerRadius = UDim.new(1, 0)
-    RegisterElement("Accents", flAura)
+    local flInner = Instance.new("Frame", FloatingSquircle)
+    flInner.Name = "ToggleInner"
+    flInner.Position = UDim2.new(0, 4, 0, 4)
+    flInner.Size = UDim2.new(1, -8, 1, -8)
+    flInner.BackgroundColor3 = Theme.Sidebar
+    flInner.BackgroundTransparency = 0.08
+    flInner.BorderSizePixel = 0
+    flInner.ZIndex = 21
+    Instance.new("UICorner", flInner).CornerRadius = UDim.new(0, 15)
+    RegisterElement("Sidebars", flInner)
 
-    task.spawn(function()
-        while FloatingSquircle and FloatingSquircle.Parent do
-            Tween(flAura, 1.4, {Size = UDim2.new(1, 16, 1, 16), BackgroundTransparency = 0.82}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-            task.wait(1.4)
-            if not FloatingSquircle or not FloatingSquircle.Parent then break end
-            Tween(flAura, 1.4, {Size = UDim2.new(1, 8, 1, 8), BackgroundTransparency = 0.94}, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-            task.wait(1.4)
-        end
-    end)
+    local flIconGlow = Instance.new("Frame", flInner)
+    flIconGlow.Name = "LogoGlow"
+    flIconGlow.AnchorPoint = Vector2.new(0.5, 0.5)
+    flIconGlow.Position = UDim2.new(0.5, 0, 0.5, 0)
+    flIconGlow.Size = UDim2.new(0, 42, 0, 42)
+    flIconGlow.BackgroundColor3 = Theme.Accent
+    flIconGlow.BackgroundTransparency = 0.88
+    flIconGlow.BorderSizePixel = 0
+    flIconGlow.ZIndex = 22
+    Instance.new("UICorner", flIconGlow).CornerRadius = UDim.new(0, 13)
+    RegisterElement("Accents", flIconGlow)
 
-    local flLogoGlow = Instance.new("Frame", FloatingSquircle)
-    flLogoGlow.Name = "LogoUnderglow"
-    flLogoGlow.AnchorPoint = Vector2.new(0.5, 0.5)
-    flLogoGlow.Position = UDim2.new(0.5, 0, 0.5, 0)
-    flLogoGlow.Size = UDim2.new(0, 30, 0, 30)
-    flLogoGlow.BackgroundColor3 = Theme.Accent
-    flLogoGlow.BackgroundTransparency = 0.75
-    flLogoGlow.BorderSizePixel = 0
-    flLogoGlow.ZIndex = 3
-    Instance.new("UICorner", flLogoGlow).CornerRadius = UDim.new(1, 0)
-    RegisterElement("Accents", flLogoGlow)
-
-    -- ĐÃ THAY ĐỔI HÌNH NỀN BÓNG ĐỔ SANG LOGO SYL CỦA BẠN TẠI ĐÂY
-    local flIconShadow = Instance.new("ImageLabel", FloatingSquircle)
-    flIconShadow.Name = "IconShadow"
-    flIconShadow.AnchorPoint = Vector2.new(0.5, 0.5)
-    flIconShadow.Size = UDim2.new(0, 28, 0, 28)
-    flIconShadow.Position = UDim2.new(0.5, 1, 0.5, 2)
-    flIconShadow.BackgroundTransparency = 1
-    flIconShadow.ScaleType = Enum.ScaleType.Fit
-    flIconShadow.Image = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png"
-    flIconShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-    flIconShadow.ImageTransparency = 0.6
-    flIconShadow.ZIndex = 5
-
-    -- ĐÃ THAY ĐỔI LOGO CHÍNH NÚT TRÒN SANG LOGO SYL CỦA BẠN TẠI ĐÂY
-    local flIcon = Instance.new("ImageLabel", FloatingSquircle)
+    local flIcon = Instance.new("ImageLabel", flInner)
     flIcon.Name = "MainLogo"
     flIcon.AnchorPoint = Vector2.new(0.5, 0.5)
-    flIcon.Size = UDim2.new(0, 28, 0, 28)
     flIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
+    flIcon.Size = UDim2.new(0, 37, 0, 37)
     flIcon.BackgroundTransparency = 1
     flIcon.ScaleType = Enum.ScaleType.Fit
-    flIcon.Image = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png"
+    flIcon.Image = ToggleLogoAsset
     flIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-    flIcon.Rotation = 0
-    flIcon.ZIndex = 10
+    flIcon.ZIndex = 24
+
     local flIconScale = Instance.new("UIScale", flIcon)
+    flIconScale.Scale = 1
 
-    RunService.RenderStepped:Connect(function()
-        if flGrad and flGrad.Parent then
-            flGrad.Rotation = (tick() * 120) % 360
-        end
-    end)
-
-    AttachDrag(FloatingSquircle)
+    local flStatus = Instance.new("Frame", FloatingSquircle)
+    flStatus.Name = "ToggleStatus"
+    flStatus.AnchorPoint = Vector2.new(1, 1)
+    flStatus.Position = UDim2.new(1, -3, 1, -3)
+    flStatus.Size = UDim2.new(0, 11, 0, 11)
+    flStatus.BackgroundColor3 = Theme.TextMuted
+    flStatus.BorderSizePixel = 0
+    flStatus.ZIndex = 26
+    Instance.new("UICorner", flStatus).CornerRadius = UDim.new(1, 0)
+    local flStatusStroke = Instance.new("UIStroke", flStatus)
+    flStatusStroke.Color = Theme.Background
+    flStatusStroke.Thickness = 2
 
     local flBtn = Instance.new("TextButton", FloatingSquircle)
     flBtn.Name = "HitboxButton"
     flBtn.Size = UDim2.new(1, 0, 1, 0)
     flBtn.BackgroundTransparency = 1
     flBtn.Text = ""
-    flBtn.ZIndex = 25
+    flBtn.AutoButtonColor = false
+    flBtn.ZIndex = 30
 
     UpdateFloatingToggleVisual = function()
         if not FloatingSquircle or not FloatingSquircle.Parent then return end
+
         local isOpen = MainWindow and MainWindow.Visible
-        if isOpen then
-            Tween(flCircleStroke, 0.25, {Thickness = 3.6, Transparency = 0})
-            Tween(flAura, 0.25, {BackgroundTransparency = 0.80})
-            Tween(flLogoGlow, 0.25, {BackgroundTransparency = 0.65})
-        else
-            Tween(flCircleStroke, 0.25, {Thickness = 3.2, Transparency = 0.25})
-            Tween(flAura, 0.25, {BackgroundTransparency = 0.90})
-            Tween(flLogoGlow, 0.25, {BackgroundTransparency = 0.85})
-        end
+        local accent = isOpen and Theme.Success or Theme.Accent
+
+        Tween(flStroke, 0.18, {
+            Color = accent,
+            Transparency = isOpen and 0 or 0.18,
+            Thickness = isOpen and 2.2 or 1.6
+        })
+        Tween(flIconGlow, 0.18, {
+            BackgroundColor3 = Theme.Accent,
+            BackgroundTransparency = isOpen and 0.78 or 0.90
+        })
+        Tween(flStatus, 0.18, {
+            BackgroundColor3 = isOpen and Theme.Success or Theme.TextMuted
+        })
     end
 
     flBtn.MouseEnter:Connect(function()
-        Tween(flScale, 0.2, {Scale = 1.1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-        Tween(flCircleStroke, 0.2, {Thickness = 4.2, Transparency = 0})
-        Tween(flAura, 0.2, {BackgroundTransparency = 0.70, Size = UDim2.new(1, 18, 1, 18)})
-        Tween(flLogoGlow, 0.2, {BackgroundTransparency = 0.55})
+        Tween(flScale, 0.16, {Scale = 1.08}, Enum.EasingStyle.Quad)
+        Tween(flStroke, 0.16, {Thickness = 2.5, Transparency = 0})
+        Tween(flIconGlow, 0.16, {BackgroundTransparency = 0.76})
     end)
 
     flBtn.MouseLeave:Connect(function()
-        Tween(flScale, 0.2, {Scale = 1.0}, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+        Tween(flScale, 0.16, {Scale = 1}, Enum.EasingStyle.Quad)
         UpdateFloatingToggleVisual()
     end)
 
+    AttachDrag(FloatingSquircle)
+
     flBtn.MouseButton1Click:Connect(function()
-        Tween(flScale, 0.06, {Scale = 0.88}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-        task.delay(0.06, function()
-            Tween(flScale, 0.22, {Scale = 1.0}, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+        Tween(flScale, 0.07, {Scale = 0.91}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+        task.delay(0.07, function()
+            if FloatingSquircle and FloatingSquircle.Parent then
+                Tween(flScale, 0.2, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+            end
         end)
 
-        flIconScale.Scale = 0.84
-        Tween(flIconScale, 0.3, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+        Tween(flIconScale, 0.1, {Scale = 0.88}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+        task.delay(0.1, function()
+            if flIcon and flIcon.Parent then
+                Tween(flIconScale, 0.2, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+            end
+        end)
 
-        local ripple = Instance.new("Frame", FloatingSquircle)
-        ripple.AnchorPoint = Vector2.new(0.5, 0.5)
-        ripple.Position = UDim2.new(0.5, 0, 0.5, 0)
-        ripple.Size = UDim2.new(0, 10, 0, 10)
-        ripple.BackgroundColor3 = Theme.AccentLight
-        ripple.BackgroundTransparency = 0.35
-        ripple.BorderSizePixel = 0
-        ripple.ZIndex = 1
-        Instance.new("UICorner", ripple).CornerRadius = UDim.new(1, 0)
-        local ripTw = Tween(ripple, 0.45, {
-            Size = UDim2.new(2.4, 0, 2.4, 0),
-            BackgroundTransparency = 1
-        }, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
-        ripTw.Completed:Connect(function() ripple:Destroy() end)
-        task.delay(0.5, function() if ripple and ripple.Parent then ripple:Destroy() end end)
-
+        PlaySound("Click")
         ToggleMainWindow()
         UpdateFloatingToggleVisual()
     end)
@@ -4056,7 +4041,6 @@ function StarHubUI:CreateWindow(cfg)
             if txt and txt ~= "" then
                 local res = LoadCustomImage(txt, StarHubUI.Icons.Logo)
                 BrandIcon.Image = res
-                flIcon.Image = res
                 StarHubUI.Settings.CustomLogoUrl = txt
                 StarHubUI:AutoSave()
             end
@@ -4240,4 +4224,4 @@ if not _G.STARHUB_LIBRARY_ONLY then
         })
     end
 
-return StarHubUI
+return StarHubUI bạn xóa cái phần nút bật tắt kia rồi tạo lại nút bật tắt khắc với logo là https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png
