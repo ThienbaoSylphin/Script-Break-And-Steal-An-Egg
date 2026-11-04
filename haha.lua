@@ -1492,91 +1492,51 @@ function StarHubUI:CreateWindow(cfg)
     ContentArea.Position = UDim2.new(0, 175, 0, 0)
     ContentArea.BackgroundTransparency = 1
 
-    -- FLOATING TOGGLE REDESIGN
-    -- Nút mới dạng rounded-square, dùng logo SylPhin cố định.
-    local ToggleLogoUrl = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/logo.png"
+    -- FLOATING TOGGLE: LOGO-ONLY (NO SQUARE / NO BACKPLATE)
+    local ToggleLogoUrl = "https://raw.githubusercontent.com/ThienbaoSylphin/Script-Break-And-Steal-An-Egg/main/image.png"
     local ToggleLogoAsset = LoadCustomImage(ToggleLogoUrl, StarHubUI.Icons.Logo)
 
     local FloatingSquircle = Instance.new("Frame", ScreenGui)
     FloatingSquircle.Name = "StarHubUI_FloatingToggle"
-    FloatingSquircle.Size = UDim2.new(0, 60, 0, 60)
+    FloatingSquircle.Size = UDim2.new(0, 68, 0, 68)
     FloatingSquircle.Position = UDim2.new(0, 22, 0.45, 0)
-    FloatingSquircle.BackgroundColor3 = Theme.Box
-    FloatingSquircle.BackgroundTransparency = 0.06
+    FloatingSquircle.BackgroundTransparency = 1
     FloatingSquircle.BorderSizePixel = 0
     FloatingSquircle.Visible = StarHubUI.Settings.ShowFloatingToggle ~= false
     FloatingSquircle.ZIndex = 20
-    Instance.new("UICorner", FloatingSquircle).CornerRadius = UDim.new(0, 18)
 
     local flScale = Instance.new("UIScale", FloatingSquircle)
     flScale.Scale = 1
 
-    local flStroke = Instance.new("UIStroke", FloatingSquircle)
-    flStroke.Name = "ToggleStroke"
-    flStroke.Color = Theme.Accent
-    flStroke.Thickness = 1.6
-    flStroke.Transparency = 0.12
-
-    local flGrad = Instance.new("UIGradient", flStroke)
-    flGrad.Name = "ToggleGradient"
-    flGrad.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Theme.Grad1 or Theme.Accent),
-        ColorSequenceKeypoint.new(1, Theme.Grad2 or Theme.AccentLight)
-    })
-    flGrad.Rotation = 35
-    RegisterElement("Gradients", flGrad)
-    RegisterElement("Boxes", FloatingSquircle)
-    RegisterElement("Borders", flStroke)
-
-    local flInner = Instance.new("Frame", FloatingSquircle)
-    flInner.Name = "ToggleInner"
-    flInner.Position = UDim2.new(0, 4, 0, 4)
-    flInner.Size = UDim2.new(1, -8, 1, -8)
-    flInner.BackgroundColor3 = Theme.Sidebar
-    flInner.BackgroundTransparency = 0.08
-    flInner.BorderSizePixel = 0
-    flInner.ZIndex = 21
-    Instance.new("UICorner", flInner).CornerRadius = UDim.new(0, 15)
-    RegisterElement("Sidebars", flInner)
-
-    local flIconGlow = Instance.new("Frame", flInner)
-    flIconGlow.Name = "LogoGlow"
-    flIconGlow.AnchorPoint = Vector2.new(0.5, 0.5)
-    flIconGlow.Position = UDim2.new(0.5, 0, 0.5, 0)
-    flIconGlow.Size = UDim2.new(0, 42, 0, 42)
-    flIconGlow.BackgroundColor3 = Theme.Accent
-    flIconGlow.BackgroundTransparency = 0.88
-    flIconGlow.BorderSizePixel = 0
-    flIconGlow.ZIndex = 22
-    Instance.new("UICorner", flIconGlow).CornerRadius = UDim.new(0, 13)
-    RegisterElement("Accents", flIconGlow)
-
-    local flIcon = Instance.new("ImageLabel", flInner)
+    -- Hiển thị trực tiếp ảnh logo; không bọc trong Frame/UICorner hình vuông.
+    local flIcon = Instance.new("ImageLabel", FloatingSquircle)
     flIcon.Name = "MainLogo"
     flIcon.AnchorPoint = Vector2.new(0.5, 0.5)
     flIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
-    flIcon.Size = UDim2.new(0, 37, 0, 37)
+    flIcon.Size = UDim2.new(1, 0, 1, 0)
     flIcon.BackgroundTransparency = 1
+    flIcon.BorderSizePixel = 0
     flIcon.ScaleType = Enum.ScaleType.Fit
     flIcon.Image = ToggleLogoAsset
     flIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
-    flIcon.ZIndex = 24
+    flIcon.ZIndex = 22
 
     local flIconScale = Instance.new("UIScale", flIcon)
     flIconScale.Scale = 1
 
+    -- Chấm trạng thái nhỏ, tách khỏi hình logo.
     local flStatus = Instance.new("Frame", FloatingSquircle)
     flStatus.Name = "ToggleStatus"
     flStatus.AnchorPoint = Vector2.new(1, 1)
     flStatus.Position = UDim2.new(1, -3, 1, -3)
-    flStatus.Size = UDim2.new(0, 11, 0, 11)
+    flStatus.Size = UDim2.new(0, 10, 0, 10)
     flStatus.BackgroundColor3 = Theme.TextMuted
     flStatus.BorderSizePixel = 0
-    flStatus.ZIndex = 26
+    flStatus.ZIndex = 25
     Instance.new("UICorner", flStatus).CornerRadius = UDim.new(1, 0)
     local flStatusStroke = Instance.new("UIStroke", flStatus)
     flStatusStroke.Color = Theme.Background
-    flStatusStroke.Thickness = 2
+    flStatusStroke.Thickness = 1.5
 
     local flBtn = Instance.new("TextButton", FloatingSquircle)
     flBtn.Name = "HitboxButton"
@@ -1588,52 +1548,35 @@ function StarHubUI:CreateWindow(cfg)
 
     UpdateFloatingToggleVisual = function()
         if not FloatingSquircle or not FloatingSquircle.Parent then return end
-
         local isOpen = MainWindow and MainWindow.Visible
-        local accent = isOpen and Theme.Success or Theme.Accent
-
-        Tween(flStroke, 0.18, {
-            Color = accent,
-            Transparency = isOpen and 0 or 0.18,
-            Thickness = isOpen and 2.2 or 1.6
-        })
-        Tween(flIconGlow, 0.18, {
-            BackgroundColor3 = Theme.Accent,
-            BackgroundTransparency = isOpen and 0.78 or 0.90
-        })
         Tween(flStatus, 0.18, {
             BackgroundColor3 = isOpen and Theme.Success or Theme.TextMuted
+        })
+        Tween(flIcon, 0.18, {
+            ImageTransparency = 0
         })
     end
 
     flBtn.MouseEnter:Connect(function()
         Tween(flScale, 0.16, {Scale = 1.08}, Enum.EasingStyle.Quad)
-        Tween(flStroke, 0.16, {Thickness = 2.5, Transparency = 0})
-        Tween(flIconGlow, 0.16, {BackgroundTransparency = 0.76})
+        Tween(flIconScale, 0.16, {Scale = 1.04}, Enum.EasingStyle.Quad)
     end)
 
     flBtn.MouseLeave:Connect(function()
         Tween(flScale, 0.16, {Scale = 1}, Enum.EasingStyle.Quad)
+        Tween(flIconScale, 0.16, {Scale = 1}, Enum.EasingStyle.Quad)
         UpdateFloatingToggleVisual()
     end)
 
     AttachDrag(FloatingSquircle)
 
     flBtn.MouseButton1Click:Connect(function()
-        Tween(flScale, 0.07, {Scale = 0.91}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+        Tween(flScale, 0.07, {Scale = 0.94}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
         task.delay(0.07, function()
             if FloatingSquircle and FloatingSquircle.Parent then
                 Tween(flScale, 0.2, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
             end
         end)
-
-        Tween(flIconScale, 0.1, {Scale = 0.88}, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
-        task.delay(0.1, function()
-            if flIcon and flIcon.Parent then
-                Tween(flIconScale, 0.2, {Scale = 1}, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-            end
-        end)
-
         PlaySound("Click")
         ToggleMainWindow()
         UpdateFloatingToggleVisual()
