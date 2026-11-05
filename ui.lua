@@ -1682,7 +1682,7 @@ function StarHubUI:CreateWindow(cfg)
     StarHubUI.CurrentWindowObj = WindowObj
 
     function WindowObj:ShowDiscordModal(inviteUrl)
-        inviteUrl = inviteUrl or "https://discord.gg/aikaihub"
+        inviteUrl = inviteUrl or "https://discord.gg/arKNekkWM"
         pcall(function() setclipboard(inviteUrl) end)
         StarHubUI:Notify({
             Title = "DISCORD SERVER COPIED",
