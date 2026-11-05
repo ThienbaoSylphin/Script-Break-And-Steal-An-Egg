@@ -3919,7 +3919,7 @@ function StarHubUI:CreateWindow(cfg)
             TeleportService:Teleport(game.PlaceId, LocalPlayer)
         end)
         QuickBox:AddActionRow("Discord Community", "Copy encrypted access link to clipboard", StarHubUI.Icons.Copy, function()
-            WindowObj:ShowDiscordModal("https://discord.gg/aikaihub")
+            WindowObj:ShowDiscordModal("https://discord.gg/arKNekkWM")
         end)
     end
 
